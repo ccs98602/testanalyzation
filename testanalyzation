@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>段考成績分析工具</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      max-width: 600px;
+      color: #003366;
+    }
+    h1 {
+      color: #0055aa;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
+      border: 1px solid #0077cc;
+      border-radius: 6px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 15px;
+      cursor: pointer;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    button:active {
+      background: #004c99;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #99ccee;
+      border-radius: 8px;
+      background: #eef7ff;
+    }
+    @media (max-width: 600px) {
+      body {
+        margin: 10px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>段考成績分析工具</h1>
+
+  <label>段考總分（總分）</label>
+  <input type="number" id="total" />
+
+  <label>有教過的題目分（教學覆蓋分數）</label>
+  <input type="number" id="taught" />
+
+  <label>確實學會的題目分（掌握分數）</label>
+  <input type="number" id="learned" />
+
+  <label>實得的題目分（實際得分）</label>
+  <input type="number" id="scored" />
+
+  <button onclick="calc()">計算</button>
+
+  <div class="result" id="result">
+    <p>（輸入數據後將顯示結果）</p>
+  </div>
+
+<script>
+function calc() {
+  const total = Number(document.getElementById('total').value);
+  const taught = Number(document.getElementById('taught').value);
+  const learned = Number(document.getElementById('learned').value);
+  const scored = Number(document.getElementById('scored').value);
+
+  if (!total || !taught || !learned) {
+    document.getElementById('result').innerHTML = '請輸入完整數據';
+    return;
+  }
+
+  const prepRate = taught / total;
+  const learnRate = learned / taught;
+  const execRate = learned ? scored / learned : 0;
+
+  let notes = "<h3>備註</h3>";
+  notes += `<p>準備度 (有教過 / 總分)：${(prepRate * 100).toFixed(1)}%</p>`;
+  notes += `<p>學習率 (確實學會 / 有教過)：${(learnRate * 100).toFixed(1)}%</p>`;
+  notes += `<p>執行率 (實得 / 確實學會)：${(execRate * 100).toFixed(1)}%</p>`;
+
+  if (learnRate < 0.85) {
+    notes += `<p><strong>學習率不佳（小於85%）改善方式：</strong><br>
+      1. 上課保持專注<br>
+      2. 認真完成筆記、作業<br>
+      3. 每天規劃在家複習時間
+    </p>`;
+  }
+  if (execRate < 0.85) {
+    notes += `<p><strong>執行率不佳（小於85%）改善方式：</strong><br>
+      1. 要求計算速度、精確性<br>
+      2. 做好考試時間分配<br>
+      3. 保持良好健康狀況與穩定心態
+    </p>`;
+  }
+
+  document.getElementById('result').innerHTML = notes;
+}
+</script>
+</body>
+</html>
